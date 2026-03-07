@@ -82,7 +82,6 @@ def plot_channel_temperature(conn, drillhole_id,from_ts,to_ts):
 
 def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts):
     node_data = get_node_measurements(conn,drillhole_id, from_ts, to_ts)
-    print("NODE DATA SAMPLE:", node_data[:5])
     if not node_data:
         plt.text(0.5, 0.5, "No data", ha='center', va='center')
         
