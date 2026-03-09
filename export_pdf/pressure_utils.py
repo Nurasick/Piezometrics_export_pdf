@@ -4,7 +4,7 @@ def convert_pressure_from_kPa(values, pressure_type):
     elif pressure_type == 'mbar':
         return [v * 10 if v is not None else None for v in values]
     elif pressure_type == 'mH2O':
-        return [v * 0.10197 if v is not None else None for v in values]
+        return [float(v) * 0.10197 if v is not None else None for v in values]
     return values
 
 def pressure_label(pressure_type):
@@ -21,5 +21,5 @@ def convert_pressure_from_mbar(values, pressure_type):
     elif pressure_type == 'mbar':
         return values
     elif pressure_type == 'mH2O':
-        return [v * 0.010197 if v is not None else None for v in values]
+        return [float(v) * 0.010197 if v is not None else None for v in values]
     return values

@@ -108,7 +108,7 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type=
     atm_sea_converted = convert_pressure_from_mbar(atm_sea, pressure_type)
 
     plt.figure(figsize=(14, 7))
-    plt.plot(timestamps, atm, label='Atmospheric Pressure')
+    plt.plot(timestamps, atm_converted, label='Atmospheric Pressure')
 
 
     plt.xlabel('Время')
@@ -132,7 +132,7 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type=
     plt.figure(figsize=(14,5))
 
     if sea_level_exists:
-        plt.plot(timestamps, atm_sea)
+        plt.plot(timestamps, atm_sea_converted)
     else:
         plt.text(
             0.5,
