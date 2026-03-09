@@ -31,7 +31,7 @@ def plot_channel_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type='kPa
 
     for ch, data in channels.items():
 
-        plt.figure(figsize=(14, 7))
+        plt.figure(figsize=(14, 8))
 
         plt.plot(data['timestamps'], data['pressures'], label=f'Channel {ch} Pressure')
 
@@ -67,7 +67,7 @@ def plot_channel_temperature(conn, drillhole_id,from_ts,to_ts):
     
 
     for ch, data in channels.items():
-        plt.figure(figsize=(14, 7))
+        plt.figure(figsize=(14, 8))
         plt.plot(data['timestamps'], data['temperatures'], label=f'Channel {ch} Temperature')
         
         plt.xlabel('Время')
@@ -107,7 +107,7 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type=
     atm_converted = convert_pressure_from_mbar(atm, pressure_type)
     atm_sea_converted = convert_pressure_from_mbar(atm_sea, pressure_type)
 
-    plt.figure(figsize=(14, 7))
+    plt.figure(figsize=(14, 8))
     plt.plot(timestamps, atm_converted, label='Atmospheric Pressure')
 
 
@@ -125,11 +125,10 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type=
     plt.close()
 
     plots['atm'] = buffer
-
-
+    '''
     sea_level_exists = any(v is not None for v in atm_sea)
 
-    plt.figure(figsize=(14,5))
+    plt.figure(figsize=(14,8))
 
     if sea_level_exists:
         plt.plot(timestamps, atm_sea_converted)
@@ -155,5 +154,6 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type=
     plt.close()
 
     plots["atm_sea"] = buffer
+    '''
 
     return plots

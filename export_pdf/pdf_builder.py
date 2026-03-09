@@ -48,7 +48,7 @@ def _draw_pressure_page(c,section):
     for ch, img in section["pressure_img"].items():
         _draw_page_number(c)
         c.showPage()
-        _draw_header(c,info,f"Давление - Канал {ch}")
+        _draw_header(c,info,f"Давление",ch)
 
         _draw_full_plot(c,img)
 
@@ -61,7 +61,7 @@ def _draw_temp_page(c,section):
     for ch, img in section["temperature_img"].items():
         _draw_page_number(c)
         c.showPage()
-        _draw_header(c,info,f"Температура - Канал {ch}")
+        _draw_header(c,info,f"Температура",ch)
 
         _draw_full_plot(c,img)
 
@@ -81,12 +81,15 @@ def _draw_atm_page(c,section):
 
         _draw_full_plot(c,img)
 
-def _draw_header(c,info,title):
+def _draw_header(c,info,title,ch=None):
 
     width, height = landscape(A4)
 
     c.setFont("DejaVu-Bold", 18)
-    c.drawString(40, height - 40, f"{info['name']} (ID: {info['drillhole_id']})")
+    if ch is not None:
+        c.drawString(40, height - 40, f"{info['name']} - Канал {ch} (ID: {info['drillhole_id']})")
+    else:
+        c.drawString(40, height - 40, f"{info['name']} (ID: {info['drillhole_id']})")
 
     c.setFont("DejaVu", 12)
     c.drawString(40, height - 60, f"Месторождение: {info['deposit_id']}")
@@ -106,7 +109,7 @@ def _draw_full_plot(c,img_buffer):
 
     plot_height = available_width * (img.getSize()[1] / img.getSize()[0])
 
-    y = height - 150 - plot_height
+    y = height - 125 - plot_height
     c.drawImage(img,40,y,width=available_width,height=plot_height)
 
 def _draw_page_number(c):
