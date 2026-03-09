@@ -89,12 +89,13 @@ py export_pdf.py --drillholes 159421 159412 --from "2026-02-06T00:00:00" --to "2
 
 ### Parameters
 
-| Argument       | Description                  |
-| -------------- | ---------------------------- |
-| `--drillholes` | List of drillhole IDs        |
-| `--from`       | Start timestamp (ISO format) |
-| `--to`         | End timestamp (ISO format)   |
-| `--output`     | Output PDF file name         |
+| Argument         | Description                  |
+| --------------   | ---------------------------- |
+| `--drillholes`   | List of drillhole IDs        |
+| `--from`         | Start timestamp (ISO format) |
+| `--to`           | End timestamp (ISO format)   |
+| `--pressure_type`| choice of kPa, mbar, mH2)    |
+| `--output`       | Output PDF file name         |
 
 ---
 
@@ -105,6 +106,7 @@ py export_pdf.py \
   --drillholes 159421 159412 \
   --from "2026-02-06T00:00:00" \
   --to "2026-03-06T00:00:00" \
+  --pressure_type "kPa" \
   --output report.pdf
 ```
 
