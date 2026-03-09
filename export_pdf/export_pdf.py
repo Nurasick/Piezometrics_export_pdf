@@ -1,3 +1,5 @@
+import os
+
 from db import get_db_connection
 from queries import get_channel_measurements, get_drillhole_info, get_node_measurements
 from plots import plot_channel_pressure, plot_channel_temperature, plot_atmospheric_pressure
@@ -19,7 +21,9 @@ def main():
     from_ts = args.from_ts
     to_ts = args.to_ts
     pressure_type = args.pressure_type
-    output_file = args.output
+    base, ext = os.path.splitext(args.output)
+    output_file = f"{base}_{pressure_type}_{from_ts[:10]}_{to_ts[:10]}{ext}"
+    
 
     conn = get_db_connection()
 
