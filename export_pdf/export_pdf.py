@@ -10,6 +10,7 @@ def main():
     parser.add_argument('--drillholes', nargs='+', required=True, help='List of drillhole IDs')
     parser.add_argument('--from', dest='from_ts', required=True, help='Start timestamp (YYYY-MM-DD HH:MM:SS)')
     parser.add_argument('--to', dest='to_ts', required=True, help='End timestamp (YYYY-MM-DD HH:MM:SS)')
+    parser.add_argument('--pressure_type', choices = ['kPa','mbar','mH2O'], default='kPa', help='Pressure unit for plots (default: kPa)')
     parser.add_argument('--output',required=True, help='Output PDF file name')
 
     args = parser.parse_args()
@@ -17,6 +18,7 @@ def main():
     drillholes = args.drillholes
     from_ts = args.from_ts
     to_ts = args.to_ts
+    pressure_type = args.pressure_type
     output_file = args.output
 
     conn = get_db_connection()
@@ -36,9 +38,9 @@ def main():
             'longitude' : info_row[4]
         }
 
-        pressure_img = plot_channel_pressure(conn, dh_id, from_ts, to_ts)
+        pressure_img = plot_channel_pressure(conn, dh_id, from_ts, to_ts, pressure_type)
         temperature_img = plot_channel_temperature(conn, dh_id, from_ts, to_ts)
-        atmospheric_img = plot_atmospheric_pressure(conn, dh_id, from_ts, to_ts)
+        atmospheric_img = plot_atmospheric_pressure(conn, dh_id, from_ts, to_ts, pressure_type)
 
         drillhole_sections.append({
             'drillhole_info' : drillhole_info,
@@ -48,10 +50,10 @@ def main():
         })
 
     title_info = {
-        'title' : 'Drillhole Measurements Report',
+        'title' : 'Отчет по скважинам',
         'from' : from_ts,
         'to' : to_ts,
-        'drillholes' : drillholes
+        'drillholes' : [f"{section['drillhole_info']['name']} ({section['drillhole_info']['drillhole_id']})" for section in drillhole_sections]
     }
 
 

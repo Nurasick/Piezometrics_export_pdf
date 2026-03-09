@@ -1,3 +1,4 @@
+from pressure_utils import convert_pressure_from_kPa,convert_pressure_from_mbar, pressure_label
 from queries import get_channel_measurements, get_drillhole_info, get_node_measurements
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -9,7 +10,7 @@ from io import BytesIO
 
 # Plot the pressure and temerature data for each channel
 
-def plot_channel_pressure(conn, drillhole_id, from_ts, to_ts):
+def plot_channel_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type='kPa'):
     channel_data = get_channel_measurements(conn, drillhole_id, from_ts, to_ts)
 
 
@@ -22,17 +23,21 @@ def plot_channel_pressure(conn, drillhole_id, from_ts, to_ts):
         channels[ch]['pressures'].append(pressure)
         channels[ch]['temperatures'].append(temp)
 
+    # Convert pressure values based on the specified type
+    for ch, data in channels.items():
+        channels[ch]['pressures'] = convert_pressure_from_kPa(data['pressures'], pressure_type)
+
     channel_plots = {}
 
     for ch, data in channels.items():
 
-        plt.figure(figsize=(14, 5))
+        plt.figure(figsize=(14, 7))
 
         plt.plot(data['timestamps'], data['pressures'], label=f'Channel {ch} Pressure')
 
-        plt.xlabel('Time')
-        plt.ylabel('Pressure')
-        plt.title(f'Pressure - Channel {ch} for Drillhole {drillhole_id}')
+        plt.xlabel('Время')
+        plt.ylabel(pressure_label(pressure_type))
+        plt.title(f'{pressure_label(pressure_type)} - Канал {ch} для скважины {drillhole_id}')
         plt.grid(True)
         plt.tight_layout()
         buffer = BytesIO()
@@ -62,12 +67,12 @@ def plot_channel_temperature(conn, drillhole_id,from_ts,to_ts):
     
 
     for ch, data in channels.items():
-        plt.figure(figsize=(14, 5))
+        plt.figure(figsize=(14, 7))
         plt.plot(data['timestamps'], data['temperatures'], label=f'Channel {ch} Temperature')
         
-        plt.xlabel('Time')
-        plt.ylabel('Temperature')
-        plt.title(f'Temperature - Channel {ch} for Drillhole {drillhole_id}')
+        plt.xlabel('Время')
+        plt.ylabel('Температура (°C)')
+        plt.title(f'Температура - Канал {ch} для скважины {drillhole_id}')
         plt.grid(True)
         plt.tight_layout()
 
@@ -80,10 +85,10 @@ def plot_channel_temperature(conn, drillhole_id,from_ts,to_ts):
     
     return channel_plots
 
-def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts):
+def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts, pressure_type='mbar'):
     node_data = get_node_measurements(conn,drillhole_id, from_ts, to_ts)
     if not node_data:
-        plt.text(0.5, 0.5, "No data", ha='center', va='center')
+        plt.text(0.5, 0.5, "Нет данных", ha='center', va='center')
         
         
 
@@ -99,20 +104,22 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts):
         atm_sea.append(p2)
 
     plots = {}
+    atm_converted = convert_pressure_from_mbar(atm, pressure_type)
+    atm_sea_converted = convert_pressure_from_mbar(atm_sea, pressure_type)
 
-    plt.figure(figsize=(14, 5))
-    plt.plot(timestamps, atm, label='Atmospheric Pressure (mbar)')
+    plt.figure(figsize=(14, 7))
+    plt.plot(timestamps, atm, label='Atmospheric Pressure')
 
 
-    plt.xlabel('Time')
-    plt.ylabel('Pressure (mbar)')
-    plt.title(f'Atmospheric Pressure Measurements for Drillhole {drillhole_id}') 
+    plt.xlabel('Время')
+    plt.ylabel(pressure_label(pressure_type))
+    plt.title(f'Измерения атмосферного давления для скважины {drillhole_id}') 
     plt.grid(True)
     plt.tight_layout()
 
     '''Save png into buffer to later insert into pdf'''
     buffer = BytesIO()
-    plt.savefig(buffer, format='png',dpi=300)
+    plt.savefig(buffer, format='png')
     buffer.seek(0)
 
     plt.close()
@@ -130,20 +137,20 @@ def plot_atmospheric_pressure(conn, drillhole_id, from_ts, to_ts):
         plt.text(
             0.5,
             0.5,
-            "No Sea Level Data Available",
+            "Нет данных атмосферного давления на уровне моря",
             ha="center",
             va="center",
             transform=plt.gca().transAxes
         )
 
-    plt.xlabel("Time")
-    plt.ylabel("Pressure (mbar)")
-    plt.title("Atmospheric Pressure at Sea Level")
+    plt.xlabel("Время")
+    plt.ylabel(pressure_label(pressure_type))
+    plt.title("Атмосферное давление на уровне моря")
     plt.grid(True)
     plt.tight_layout()
 
     buffer = BytesIO()
-    plt.savefig(buffer, format="png", dpi=300)
+    plt.savefig(buffer, format="png")
     buffer.seek(0)
     plt.close()
 
