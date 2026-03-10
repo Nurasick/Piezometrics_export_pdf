@@ -7,6 +7,14 @@ from reportlab.pdfbase.ttfonts import TTFont
 pdfmetrics.registerFont(TTFont("DejaVu", "fonts/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DejaVu-Bold", "fonts/DejaVuSans-Bold.ttf"))
 
+DEPOSIT_TRANSLATIONS = {
+    "raigorodok": "Райгородок",
+}
+
+def translate_deposit(name):
+    return DEPOSIT_TRANSLATIONS.get(name, name)
+
+
 def create_pdf(title_info, drillhole_sections, output_file):
     width, height = landscape(A4)
     c = canvas.Canvas(output_file, pagesize=(width, height))
@@ -92,8 +100,8 @@ def _draw_header(c,info,title,ch=None):
         c.drawString(40, height - 40, f"{info['name']} (ID: {info['drillhole_id']})")
 
     c.setFont("DejaVu", 12)
-    c.drawString(40, height - 60, f"Месторождение: {info['deposit_id']}")
-    c.drawString(40, height - 75, f"Координаты: ({info['latitude']}, {info['longitude']})")
+    c.drawString(40, height - 60, f"Месторождение: {translate_deposit(info['deposit_id'])}")
+    c.drawString(40, height - 75, f"Координаты: (Широта: {info['latitude']}, Долгота: {info['longitude']})")
 
     c.setFont("DejaVu-Bold", 14)
     c.drawString(40, height - 105, title)
